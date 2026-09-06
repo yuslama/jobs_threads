@@ -24,7 +24,8 @@ source_a:
   delay_seconds: [30, 90]
   # On the very first sighting of an account, ignore posts older than this so
   # adding an account does not dump 40 stale posts into the chat.
-  first_run_max_age_hours: 48
+  # TEMP: 0 disables the cutoff entirely -- set back to 48 before real use.
+  first_run_max_age_hours: 0
   # Posts per profile to consider each poll.
   posts_per_profile: 12
   watched_accounts:
