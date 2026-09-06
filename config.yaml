@@ -28,16 +28,11 @@ source_a:
   # Posts per profile to consider each poll.
   posts_per_profile: 12
   watched_accounts:
-    - lowongankerja.id
-    - kitalulus
-    - jobstreet
-    - glints.id
-    - urbanhire
-    - loker.jakarta
-    - kerjabilitas
-    - id.jobs
-    - lokerjogja.id
-    - lowongankerjabandung
+    - gadingmurni_career
+    - lowkersurabaya_official
+    - lowkerjatimdotcom
+    - loker.surabaya.sidoarjo.gresik
+    - spill_lokersurabaya
 
 # ---------------------------------------------------------------- Source B
 # Wide net: search-engine discovery of indexed Threads posts.
@@ -55,20 +50,23 @@ source_b:
   # Provider daily quota. Counted per UTC day, stops cleanly when exhausted.
   daily_query_quota: 100
   # Cap the list around 10 (PRD section 8). Measure for a week, cut the dead.
+  # All queries are scoped to accounting roles in Surabaya/Sidoarjo -- her
+  # major and her target area (PRD section 12: role titles + location are
+  # blocking questions, this is that answer).
   queries:
     # Group 1: explicit vacancy language. High precision, high competition.
-    - 'site:threads.net "loker" desainer'
-    - 'site:threads.net "lowongan" "remote"'
-    - 'site:threads.net "we are hiring" designer indonesia'
-    - 'site:threads.net "dibutuhkan segera" "kirim cv"'
+    - 'site:threads.net "loker" akuntansi surabaya'
+    - 'site:threads.net "lowongan" accounting sidoarjo'
+    - 'site:threads.net "dibutuhkan" staff finance surabaya'
+    - 'site:threads.net "we are hiring" accounting surabaya'
     # Group 2: casual hiring language. The reason this source exists.
-    - 'site:threads.net "tim gue lagi cari"'
-    - 'site:threads.net "kantor gue lagi buka"'
-    - 'site:threads.net "lagi nyari" "buat tim"'
-    - 'site:threads.net "my team is hiring" jakarta'
+    - 'site:threads.net "tim gue lagi cari" finance sby'
+    - 'site:threads.net "lagi nyari" admin keuangan sidoarjo'
+    - 'site:threads.net "kantor gue lagi buka" akuntan surabaya'
     # Group 3: role plus location.
-    - 'site:threads.net "ui designer" jakarta hiring'
-    - 'site:threads.net "social media" "loker" bandung'
+    - 'site:threads.net "staff accounting" sby'
+    - 'site:threads.net "loker" pajak surabaya'
+    - 'site:threads.net "dibutuhkan segera" bookkeeper sidoarjo'
 
 # ---------------------------------------------------------------- Filtering
 # Case-insensitive substring match on the caption. Exclude always wins.
@@ -91,6 +89,13 @@ filters:
     - vacancy
     - karir
     - career
+    - accounting
+    - akuntansi
+    - akuntan
+    - finance
+    - keuangan
+    - pajak
+    - bookkeeper
   exclude:
     - "lowongan pinjaman"
     - "join grup"
@@ -108,20 +113,21 @@ filters:
     - "unpaid"
   # Role titles used for the best-guess role field in the notification.
   role_titles:
-    - ui designer
-    - ux designer
-    - ui/ux designer
-    - graphic designer
-    - product designer
-    - social media specialist
-    - content writer
-    - copywriter
-    - admin
-    - marketing
-    - customer service
-    - data analyst
-    - frontend developer
-    - project manager
+    - staff accounting
+    - staff finance
+    - admin finance
+    - admin keuangan
+    - akuntan
+    - accounting
+    - finance officer
+    - tax officer
+    - staff pajak
+    - bookkeeper
+    - kasir
+    - cost accounting
+    - internal audit
+    - finance staff
+    - accounting staff
 
 # ---------------------------------------------------------------- Discovery
 discovery:
