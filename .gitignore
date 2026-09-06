@@ -1,0 +1,18 @@
+# secrets
+.env
+
+# runtime state
+*.db
+*.db-journal
+data/
+logs/
+*.log
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+*.egg-info/

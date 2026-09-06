@@ -1,0 +1,21 @@
+Subject: Lamaran {role} - {seeker_name}
+
+Halo {company},
+
+Saya {seeker_name}, tertarik dengan lowongan {role} yang dibagikan di Threads
+oleh @{account}.
+
+Pengalaman saya paling relevan dengan posisi ini adalah <isi 1-2 baris di sini>.
+Saya lampirkan CV dan portofolio saya untuk dilihat lebih lanjut.
+
+Kalau ada informasi tambahan yang dibutuhkan, saya siap mengirimkannya.
+Terima kasih atas waktunya.
+
+Salam,
+{seeker_name}
+{seeker_email}
+{seeker_phone}
+{seeker_portfolio}
+
+--
+Post asli: {post_url}

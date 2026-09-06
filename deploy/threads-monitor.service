@@ -1,0 +1,23 @@
+# Edit User, WorkingDirectory and ExecStart, then:
+#   sudo cp deploy/threads-monitor.service /etc/systemd/system/
+#   sudo systemctl enable --now threads-monitor
+
+[Unit]
+Description=Threads Job Monitor
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=monitor
+WorkingDirectory=/opt/threads-monitor
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/threads-monitor/.venv/bin/python -m src.main
+Restart=always
+RestartSec=30
+# Playwright needs a writable temp dir and a fair bit of memory per browser.
+PrivateTmp=true
+MemoryMax=1500M
+
+[Install]
+WantedBy=multi-user.target

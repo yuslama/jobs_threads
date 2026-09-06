@@ -1,0 +1,164 @@
+# Threads Job Monitor -- single config file.
+# Secrets live in .env, never here.
+#
+# PLACEHOLDER VALUES: the watch list, search queries, include and exclude
+# keywords below are starting points, not answers. PRD section 12 flags these
+# as blocking questions to settle with the job seeker before the first real
+# run. Everything works with these defaults; the leads just will not be hers
+# until they are replaced.
+
+seeker:
+  # Used in the email draft template.
+  name: "Nama Kamu"
+  email: "kamu@example.com"
+  phone: ""
+  portfolio: ""
+
+# ---------------------------------------------------------------- Source A
+# Fast lane: poll these public profiles for new posts.
+source_a:
+  enabled: true
+  poll_interval_minutes: 30
+  # Seconds to wait between profile requests. Randomised in this range.
+  # Do not tune these down because it feels slow (PRD section 10).
+  delay_seconds: [30, 90]
+  # On the very first sighting of an account, ignore posts older than this so
+  # adding an account does not dump 40 stale posts into the chat.
+  first_run_max_age_hours: 48
+  # Posts per profile to consider each poll.
+  posts_per_profile: 12
+  watched_accounts:
+    - lowongankerja.id
+    - kitalulus
+    - jobstreet
+    - glints.id
+    - urbanhire
+    - loker.jakarta
+    - kerjabilitas
+    - id.jobs
+    - lokerjogja.id
+    - lowongankerjabandung
+
+# ---------------------------------------------------------------- Source B
+# Wide net: search-engine discovery of indexed Threads posts.
+source_b:
+  enabled: true
+  search_interval_hours: 6
+  # Slower pacing than Source A. This is not time critical.
+  scrape_delay_seconds: [60, 150]
+  # Max post URLs to scrape per cycle, so one noisy day cannot run all night.
+  max_scrapes_per_cycle: 25
+  # Results requested per query.
+  results_per_query: 10
+  # Only recent results, so 2024 posts are not reprocessed. d1/d7/w1/m1 style.
+  date_restrict: d2
+  # Provider daily quota. Counted per UTC day, stops cleanly when exhausted.
+  daily_query_quota: 100
+  # Cap the list around 10 (PRD section 8). Measure for a week, cut the dead.
+  queries:
+    # Group 1: explicit vacancy language. High precision, high competition.
+    - 'site:threads.net "loker" desainer'
+    - 'site:threads.net "lowongan" "remote"'
+    - 'site:threads.net "we are hiring" designer indonesia'
+    - 'site:threads.net "dibutuhkan segera" "kirim cv"'
+    # Group 2: casual hiring language. The reason this source exists.
+    - 'site:threads.net "tim gue lagi cari"'
+    - 'site:threads.net "kantor gue lagi buka"'
+    - 'site:threads.net "lagi nyari" "buat tim"'
+    - 'site:threads.net "my team is hiring" jakarta'
+    # Group 3: role plus location.
+    - 'site:threads.net "ui designer" jakarta hiring'
+    - 'site:threads.net "social media" "loker" bandung'
+
+# ---------------------------------------------------------------- Filtering
+# Case-insensitive substring match on the caption. Exclude always wins.
+filters:
+  include:
+    - loker
+    - lowongan
+    - hiring
+    - "we're hiring"
+    - "open position"
+    - "open recruitment"
+    - dibutuhkan
+    - dicari
+    - rekrutmen
+    - "kirim cv"
+    - "send cv"
+    - "join our team"
+    - "lagi cari"
+    - "lagi nyari"
+    - vacancy
+    - karir
+    - career
+  exclude:
+    - "lowongan pinjaman"
+    - "join grup"
+    - "jual akun"
+    - "follow back"
+    - endorse
+    - "kerja sama konten"
+    - mlm
+    - "modal awal"
+    - "gaji harian"
+    - "senior manager"
+    - "head of"
+    - "10 tahun pengalaman"
+    - internship
+    - "unpaid"
+  # Role titles used for the best-guess role field in the notification.
+  role_titles:
+    - ui designer
+    - ux designer
+    - ui/ux designer
+    - graphic designer
+    - product designer
+    - social media specialist
+    - content writer
+    - copywriter
+    - admin
+    - marketing
+    - customer service
+    - data analyst
+    - frontend developer
+    - project manager
+
+# ---------------------------------------------------------------- Discovery
+discovery:
+  enabled: true
+  # Distinct passing posts from an unwatched account before Yus is pinged.
+  # Promotion stays a manual config edit: one spam account must not be able to
+  # poison the fast lane.
+  suggest_after_hits: 2
+
+# ---------------------------------------------------------------- Drafts
+drafts:
+  enabled: true
+  template: templates/application_email.txt
+  # There is deliberately no send configuration. See PRD section 9.
+
+# ---------------------------------------------------------------- Reliability
+reliability:
+  # Exponential backoff on 403/429, in minutes, then it holds at the last one.
+  backoff_minutes: [2, 4, 8, 16, 32, 60]
+  # Consecutive failed cycles on a source before Yus is alerted and the source
+  # pauses for pause_minutes.
+  max_consecutive_failures: 5
+  pause_minutes: 60
+  # A scraper that quietly returns nothing is worse than one that crashes.
+  # Alert after this many consecutive cycles that yielded zero posts.
+  zero_result_alert_streak: 3
+  # Retry attempts for a queued Telegram message before it is dropped.
+  notify_max_attempts: 10
+
+# ---------------------------------------------------------------- Runtime
+runtime:
+  database: data/monitor.db
+  log_level: INFO
+  log_file: logs/monitor.log
+  # Playwright page load timeout per request.
+  page_timeout_seconds: 45
+  headless: true
+  # Optional explicit Chromium binary. Leave empty to let Playwright use the
+  # browser it installed itself. Also settable via CHROMIUM_PATH.
+  chromium_path: ""

@@ -1,0 +1,8 @@
+playwright>=1.44
+jmespath>=1.0
+nested-lookup>=0.2.25
+python-telegram-bot>=21.0
+APScheduler>=3.10
+PyYAML>=6.0
+python-dotenv>=1.0
+httpx>=0.27
